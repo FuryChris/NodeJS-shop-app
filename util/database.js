@@ -30,6 +30,3 @@ const getDb = () => {
 
 exports.mongoConnect = mongoConnect;
 exports.getDb = getDb;
-const path = require('path');
-
-module.exports = path.dirname(process.mainModule.filename);
