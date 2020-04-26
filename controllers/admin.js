@@ -9,20 +9,20 @@ exports.getAddProduct = (req, res, next) => {
 };
 
 exports.postAddProduct = (req, res, next) => {
-  const title = req.body.title;
-  const imageUrl = req.body.imageUrl;
-  const price = req.body.price;
-  const description = req.body.description;
+  const { title, imageUrl, price, description } = req.body;
   const product = new Product(
-    title,
-    price,
-    description,
-    imageUrl,
-    null,
-    req.user._id
-  );
+    {
+      // po lewej - nazwy ze schema, a po prawej - przypisanie do danych powyżej
+      title: title,
+      price: price,
+      description: description,
+      imageUrl: imageUrl,
+      userId: req.user._id
+      // lub req.user._id
+    // wczesniej w vanilla mongo nie mongoose - było tworzenie obiektu
+     });
   product
-    .save()
+    .save() // mongoose ma swoją metodę save
     .then(result => {
       // console.log(result);
       console.log('Created Product');
@@ -40,7 +40,6 @@ exports.getEditProduct = (req, res, next) => {
   }
   const prodId = req.params.productId;
   Product.findById(prodId)
-    // Product.findById(prodId)
     .then(product => {
       if (!product) {
         return res.redirect('/');
@@ -62,24 +61,28 @@ exports.postEditProduct = (req, res, next) => {
   const updatedImageUrl = req.body.imageUrl;
   const updatedDesc = req.body.description;
 
-  const product = new Product(
-    updatedTitle,
-    updatedPrice,
-    updatedDesc,
-    updatedImageUrl,
-    prodId
-  );
-  product
-    .save()
-    .then(result => {
-      console.log('UPDATED PRODUCT!');
-      res.redirect('/admin/products');
+  Product
+    .findById(prodId)
+    .then( product => {
+      product.title = updatedTitle;
+      product.price = updatedPrice;
+      product.imageUrl = updatedImageUrl;
+      product.description = updatedDesc;
+      //save to metoda z mongoose bo product będzie nie js obiektem, ale obiektem z basy danych. .save użyty na istniejącym obiekcie nie stworzy nowego ale zaktualizuje stary
+      product.save()
     })
+    .then(result => {
+        console.log('UPDATED PRODUCT!');
+        res.redirect('/admin/products');
+      })
     .catch(err => console.log(err));
 };
 
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll()
+  Product.find()
+  //  !!!! BARDZO WAŻNE
+    // .select('title price -_id')
+    // .populate('userId')
     .then(products => {
       res.render('admin/products', {
         prods: products,
@@ -92,7 +95,7 @@ exports.getProducts = (req, res, next) => {
 
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
-  Product.deleteById(prodId)
+  Product.findByIdAndRemove(prodId)
     .then(() => {
       console.log('DESTROYED PRODUCT');
       res.redirect('/admin/products');

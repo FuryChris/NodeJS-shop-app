@@ -19,9 +19,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
-  User.findById('5ea08823f82a650750df075e')
-    .then(user => {
-      req.user = new User(user.name, user.email, user.cart, user._id);
+  User.findById('5ea5742341e2f92670f81377')
+    .then(user => {    
+      req.user = user;
+       // bo w user modelu już są poniższe
+      // req.user = new User(user.name, user.email, user.cart, user._id);
       next();
     })
     .catch(err => console.log(err));
@@ -35,12 +37,21 @@ app.use(errorController.get404);
 mongoose
   .connect('mongodb+srv://chris-user:2qRTt9gxE2LFBInE@node-course-cuiqt.mongodb.net/shop?retryWrites=true&w=majority')
   .then(result =>{
+    User.findOne().then(user => {
+      if (!user) {
+        const user = new User({ 
+          name: 'Chris', 
+          email:'chris@mail.com', 
+          cart: {
+            items:[]
+          }
+        })
+        user.save()        
+      }
+    });
+
     app.listen(3000);
   })
   .catch(err => {
     console.log(err);
   })
-
-// mongoConnect(() => {
-//   app.listen(3000);
-// });
