@@ -4,25 +4,25 @@ exports.getAddProduct = (req, res, next) => {
   res.render('admin/edit-product', {
     pageTitle: 'Add Product',
     path: '/admin/add-product',
-    editing: false
+    editing: false,
+    isAuthenticated: req.session.isLoggedIn
   });
 };
 
 exports.postAddProduct = (req, res, next) => {
-  const { title, imageUrl, price, description } = req.body;
-  const product = new Product(
-    {
-      // po lewej - nazwy ze schema, a po prawej - przypisanie do danych powyżej
-      title: title,
-      price: price,
-      description: description,
-      imageUrl: imageUrl,
-      userId: req.user._id
-      // lub req.user._id
-    // wczesniej w vanilla mongo nie mongoose - było tworzenie obiektu
-     });
+  const title = req.body.title;
+  const imageUrl = req.body.imageUrl;
+  const price = req.body.price;
+  const description = req.body.description;
+  const product = new Product({
+    title: title,
+    price: price,
+    description: description,
+    imageUrl: imageUrl,
+    userId: req.user
+  });
   product
-    .save() // mongoose ma swoją metodę save
+    .save()
     .then(result => {
       // console.log(result);
       console.log('Created Product');
@@ -48,7 +48,8 @@ exports.getEditProduct = (req, res, next) => {
         pageTitle: 'Edit Product',
         path: '/admin/edit-product',
         editing: editMode,
-        product: product
+        product: product,
+        isAuthenticated: req.session.isLoggedIn
       });
     })
     .catch(err => console.log(err));
@@ -61,33 +62,32 @@ exports.postEditProduct = (req, res, next) => {
   const updatedImageUrl = req.body.imageUrl;
   const updatedDesc = req.body.description;
 
-  Product
-    .findById(prodId)
-    .then( product => {
+  Product.findById(prodId)
+    .then(product => {
       product.title = updatedTitle;
       product.price = updatedPrice;
-      product.imageUrl = updatedImageUrl;
       product.description = updatedDesc;
-      //save to metoda z mongoose bo product będzie nie js obiektem, ale obiektem z basy danych. .save użyty na istniejącym obiekcie nie stworzy nowego ale zaktualizuje stary
-      product.save()
+      product.imageUrl = updatedImageUrl;
+      return product.save();
     })
     .then(result => {
-        console.log('UPDATED PRODUCT!');
-        res.redirect('/admin/products');
-      })
+      console.log('UPDATED PRODUCT!');
+      res.redirect('/admin/products');
+    })
     .catch(err => console.log(err));
 };
 
 exports.getProducts = (req, res, next) => {
   Product.find()
-  //  !!!! BARDZO WAŻNE
     // .select('title price -_id')
-    // .populate('userId')
+    // .populate('userId', 'name')
     .then(products => {
+      console.log(products);
       res.render('admin/products', {
         prods: products,
         pageTitle: 'Admin Products',
-        path: '/admin/products'
+        path: '/admin/products',
+        isAuthenticated: req.session.isLoggedIn
       });
     })
     .catch(err => console.log(err));
