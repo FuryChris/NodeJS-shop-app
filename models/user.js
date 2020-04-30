@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
+<<<<<<< HEAD
   name: {
     type: String
   },
@@ -10,12 +11,20 @@ const userSchema = new Schema({
     type: String,
     required: true,
     unique:true
+=======
+  email: {
+    type: String,
+    required: true
+>>>>>>> chris_testing
   },
   password: {
     type: String,
     required: true
   },
+<<<<<<< HEAD
   
+=======
+>>>>>>> chris_testing
   cart: {
     items: [
       {
