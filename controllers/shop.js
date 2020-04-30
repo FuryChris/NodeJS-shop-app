@@ -55,12 +55,7 @@ exports.getCart = (req, res, next) => {
       res.render('shop/cart', {
         path: '/cart',
         pageTitle: 'Your Cart',
-<<<<<<< HEAD
-        products: products,
-        isAuthenticated: req.session.isLoggedIn
-=======
         products: products
->>>>>>> chris_testing
       });
     })
     .catch(err => console.log(err));
@@ -98,11 +93,7 @@ exports.postOrder = (req, res, next) => {
       });
       const order = new Order({
         user: {
-<<<<<<< HEAD
-          name: req.user.name,
-=======
           email: req.user.email,
->>>>>>> chris_testing
           userId: req.user
         },
         products: products
