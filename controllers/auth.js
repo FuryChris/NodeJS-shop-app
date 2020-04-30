@@ -6,7 +6,7 @@ const User = require('../models/user');
 
 const transporter = nodemailer.createTransport(sendgridTransport({
   auth: {
-    api_key: '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'
+    api_key: 'your private api key'
   }
 }));
 
@@ -98,7 +98,7 @@ exports.postSignup = (req, res, next) => {
           res.redirect('/login');
           return transporter.sendMail({
             to: email,
-            from: 'chrisfurydev@gmail.com',
+            from: 'Type validate email here',
             subject: 'Signup succeeded!',
             html: '<h1> You succesfully signed up! </h1>'
           });
