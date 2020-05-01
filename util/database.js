@@ -5,7 +5,7 @@ let _db;
 
 const mongoConnect = callback => {
   MongoClient.connect(
-    'your mongo db connection key', {
+    'mongodb+srv://chris-user:2qRTt9gxE2LFBInE@node-course-cuiqt.mongodb.net/shop?retryWrites=true&w=majority', {
       useUnifiedTopology: true,
       useNewUrlParser: true,
       }

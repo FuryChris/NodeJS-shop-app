@@ -3,12 +3,13 @@ const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
 const sendgridTransport = require('nodemailer-sendgrid-transport');
+const { validationResult } = require('express-validator/check') 
 
 const User = require('../models/user');
 
 const transporter = nodemailer.createTransport(sendgridTransport({
   auth: {
-    api_key: 'yourApiKey'
+    api_key: 'SG.6GpCNhE-RwO1HtnNHmZJZw.n-Jk2EwduvTkdb2ZcIiiqT0'
   }
 }));
 
@@ -75,43 +76,39 @@ exports.postSignup = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;
-  let correctPasswords = (confirmPassword === password)
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res
+    .status(422)
+    .render('auth/signup', {
+      path: '/signup',
+      pageTitle: 'Signup',
+      errorMessage: errors.array()[0].msg
+    });  
+  }
 
-  User.findOne({ email: email })
-    .then(userDoc => {
-      if (userDoc) {
-        req.flash('error', 'There is a existing user with that e-mail adress.');
-      }
-      if (!correctPasswords){
-        req.flash('error', 'You must fill correctly password fields.');
-        return res.redirect('/signup');
-      }
-      return bcrypt
-        .hash(password, 12)
-        .then(hashedPassword => {
-          const user = new User({
-            email: email,
-            password: hashedPassword,
-            cart: { items: [] }
-          });
-          return user.save();
-        })
-        .then(result => {
-          res.redirect('/login');
-          return transporter.sendMail({
-            to: email,
-            from: 'yourmail@mail.com',
-            subject: 'Signup succeeded!',
-            html: '<h1> You succesfully signed up! </h1>'
-          });
-        })
-        .catch(err => {
-          console.log(err);
+  bcrypt
+      .hash(password, 12)
+      .then(hashedPassword => {
+        const user = new User({
+          email: email,
+          password: hashedPassword,
+          cart: { items: [] }
         });
-    })
-    .catch(err => {
-      console.log(err);
-    });
+        return user.save();
+      })
+      .then(result => {
+        res.redirect('/login');
+        return transporter.sendMail({
+          to: email,
+          from: 'chrisfurydev@gmail.com',
+          subject: 'Signup succeeded!',
+          html: '<h1> You succesfully signed up! </h1>'
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  })
 };
 
 exports.postLogout = (req, res, next) => {
@@ -156,7 +153,7 @@ exports.postReset = (req, res, next) => {
       res.redirect('/');
       transporter.sendMail({
         to: req.body.email,
-        from: 'yourmail@mail.com',
+        from: 'chrisfurydev@gmail.com',
         subject: 'Password reset!',
         html: `
         <p>You requested a password reset</p>
