@@ -5,24 +5,12 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
-<<<<<<< HEAD
-=======
 const csrf = require('csurf');
 const flash = require('connect-flash');
->>>>>>> chris_testing
 
 const errorController = require('./controllers/error');
 const User = require('./models/user');
 
-<<<<<<< HEAD
-const MONGODB_URI = 'mongodb+srv://chris-user:2qRTt9gxE2LFBInE@node-course-cuiqt.mongodb.net/shop?retryWrites=true&w=majority';
-
-const app = express();
-const store =  new MongoDBStore({
-  uri: MONGODB_URI,
-  collection: 'sessions'
-});
-=======
 const MONGODB_URI =
   'mongodb+srv://chris-user:2qRTt9gxE2LFBInE@node-course-cuiqt.mongodb.net/shop?retryWrites=true&w=majority';
 
@@ -32,7 +20,6 @@ const store = new MongoDBStore({
   collection: 'sessions'
 });
 const csrfProtection = csrf();
->>>>>>> chris_testing
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
@@ -43,29 +30,6 @@ const authRoutes = require('./routes/auth');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
-<<<<<<< HEAD
-app.use
-(session({
-  secret: 'my secret', 
-  resave: false, 
-  saveUninitialized: false, 
-  store: store 
-})
-);
-
-app.use((req, res, next) => {
-  if (!req.session.user) { 
-    return next();
-  }
-  User.findById(req.session.user._id)
-  .then(user => {
-    req.user = user;
-    next();
-  })
-  .catch(err => console.log(err));
-});
-
-=======
 app.use(
   session({
     secret: 'my secret',
@@ -94,7 +58,6 @@ app.use((req, res, next) => {
   res.locals.csrfToken = req.csrfToken();
   next();
 });
->>>>>>> chris_testing
 
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);

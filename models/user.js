@@ -3,28 +3,16 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
-<<<<<<< HEAD
-  name: {
-    type: String
-  },
-  email: {
-    type: String,
-    required: true,
-    unique:true
-=======
   email: {
     type: String,
     required: true
->>>>>>> chris_testing
   },
   password: {
     type: String,
     required: true
   },
-<<<<<<< HEAD
-  
-=======
->>>>>>> chris_testing
+  resetToken: String,
+  resetTokenExpiration:Date,
   cart: {
     items: [
       {
