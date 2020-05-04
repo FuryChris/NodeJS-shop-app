@@ -12,9 +12,9 @@ const uuidv4 = require('uuidv4');
 
 const errorController = require('./controllers/error');
 const User = require('./models/user');
-
+	
 const MONGODB_URI =
-'mongo connection';
+'mongodb+srv://chris-user:2qRTt9gxE2LFBInE@node-course-cuiqt.mongodb.net/shop?retryWrites=true&w=majority';
 
 const app = express();
 const store = new MongoDBStore({
