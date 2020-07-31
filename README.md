@@ -6,8 +6,8 @@
 
 #
 
-![](public//readme-pic1.jpg)
-![](public//readme-pic2.jpg)
+![](public/img//readme-pic1.jpg)
+![](public/img//readme-pic2.jpg)
 
 ###### Lot of things were covered during creating this app. For example:
 
