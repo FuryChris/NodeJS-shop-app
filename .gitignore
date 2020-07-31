@@ -26,3 +26,4 @@ keys.txt
 .env
 access.log
 nodemon.json
+/readme-files
